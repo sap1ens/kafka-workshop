@@ -7,6 +7,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 public class ProducerSimple {
     public static void main(String[] args) {
         String topic = "demo-topic";
+//        String topic = "demo-topic-single-partition";
         Integer count = 100;
 
         Properties props = new Properties();

@@ -1,0 +1,60 @@
+version: '2.1'
+services:
+  zookeeper:
+    container_name: zookeeper
+    image: 'confluentinc/cp-zookeeper:5.1.2'
+    ports:
+      - 2181:2181
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+  kafka:
+    container_name: kafka
+    image: 'confluentinc/cp-kafka:5.1.2'
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+  kafka_connect:
+    container_name: kafka_connect
+    image: 'confluentinc/cp-kafka-connect:5.1.2'
+    ports:
+      - 8080:8080
+    links:
+      - kafka
+    environment:
+      - CONNECT_BOOTSTRAP_SERVERS=kafka:9092
+      - CONNECT_GROUP_ID=kafka-connect-local
+      - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.storage.StringConverter
+      - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.storage.StringConverter
+      - CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE=false
+      - CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE=false
+      - CONNECT_INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - CONNECT_INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - CONNECT_INTERNAL_KEY_CONVERTER_SCHEMAS_ENABLE=false
+      - CONNECT_INTERNAL_VALUE_CONVERTER_SCHEMAS_ENABLE=false
+      - CONNECT_CONFIG_STORAGE_TOPIC=kafka_connect.config
+      - CONNECT_OFFSET_STORAGE_TOPIC=kafka_connect.offset
+      - CONNECT_STATUS_STORAGE_TOPIC=kafka_connect.status
+      - CONNECT_REST_PORT=8080
+      # - CONNECT_REST_HOST_NAME=0.0.0.0
+      - CONNECT_REST_ADVERTISED_HOST_NAME=kafka_connect
+      - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
+      - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
+      - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
+  kafka_connect_ui:
+    container_name: kafka_connect_ui
+    image: 'landoop/kafka-connect-ui:0.9.7'
+    ports:
+      - 8000:8000
+    links:
+      - kafka
+      - kafka_connect
+    environment:
+      - CONNECT_URL=http://kafka_connect:8080

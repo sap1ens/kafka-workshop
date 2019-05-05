@@ -27,7 +27,7 @@ public class StreamsAnalytics {
 
         KTable<String, User> users = builder.table("users");
 
-        KStream<String, UserActivity> usersActivity = builder.stream("users_activity");
+        KStream<String, UserActivity> usersActivity = builder.stream("user_activity");
 
         KTable<Windowed<String>, Long> activityByConsole = usersActivity
             .leftJoin(users, (activity, user) -> {
@@ -44,7 +44,7 @@ public class StreamsAnalytics {
 
         activityByConsole
             .toStream((windowedConsole, count) -> windowedConsole.toString())
-            .to("users_activity_by_console", Produced.with(Serdes.String(), Serdes.Long()));
+            .to("user_activity_by_console", Produced.with(Serdes.String(), Serdes.Long()));
 
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
         streams.start();

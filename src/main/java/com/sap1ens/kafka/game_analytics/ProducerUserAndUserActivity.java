@@ -43,7 +43,7 @@ public class ProducerUserAndUserActivity {
     }
 
     public static void produceUserActivityData() {
-        String topic = "users_activity";
+        String topic = "user_activity";
 
         try (KafkaProducer<String, UserActivity> producer = new KafkaProducer<>(props)) {
             while(true) {

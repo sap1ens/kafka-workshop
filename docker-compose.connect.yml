@@ -43,11 +43,11 @@ services:
       - CONNECT_OFFSET_STORAGE_TOPIC=kafka_connect.offset
       - CONNECT_STATUS_STORAGE_TOPIC=kafka_connect.status
       - CONNECT_REST_PORT=8080
-      # - CONNECT_REST_HOST_NAME=0.0.0.0
       - CONNECT_REST_ADVERTISED_HOST_NAME=kafka_connect
       - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
       - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
       - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
+      - CONNECT_PLUGIN_PATH=/usr/share/java
   kafka_connect_ui:
     container_name: kafka_connect_ui
     image: 'landoop/kafka-connect-ui:0.9.7'

@@ -11,7 +11,6 @@ public class ProducerUserAndUserActivity {
     private static Properties props = new Properties() {{
         put("bootstrap.servers", "localhost:9092");
         put("acks", "all");
-        put("retries", 0);
         put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         put("value.serializer", "com.sap1ens.kafka.game_analytics.serde.JSONSerializer");
     }};
